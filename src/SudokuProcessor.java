@@ -1,7 +1,5 @@
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Set;
 
 public class SudokuProcessor {
@@ -22,7 +20,7 @@ public class SudokuProcessor {
 		return !(square.getRow() == lastEmptySquare.getRow() && square.getColumn() == lastEmptySquare.getColumn());
 	}
 
-	public GridSquare nextEmptySquare(GridSquare currentSquare) {
+	private GridSquare nextEmptySquare(GridSquare currentSquare) {
 		this.esi.reset();
 		while (this.esi.hasNext() && currentSquare != null) {
 			GridSquare square = this.esi.next();
@@ -32,17 +30,37 @@ public class SudokuProcessor {
 		}
 		return this.esi.next();
 	}
+	
+	private GridSquare nextMostConstrainedSquare(GridSquare square) {
+		
+		return null;
+	}
+	
+	public GridSquare nextEmptySquare(GridSquare square, boolean forwardChecking) {
+		if (forwardChecking) {
+			return nextMostConstrainedSquare(square);
+		}
+		
+		return nextEmptySquare(square);
+	}
 
 	public EmptySquareIterator getEmptySquares() {
 		return this.esi;
 	}
 
-	public static Set<Short> getPossibleMoves(short[][] grid, int x, int y) {
+	public Short[] getPossibleValues(short[][] grid, GridSquare square, boolean forwardChecking) {
 
 		Set<Short> possibleValues = new HashSet<Short>();
 		for (short i = 0; i < 9; i++) {
 			possibleValues.add((short) (i + 1));
 		}
+		
+		if (!forwardChecking) {
+			return possibleValues.toArray(new Short[0]);
+		}
+		
+		int x = square.getRow();
+		int y = square.getColumn();
 
 		boolean eights = false;
 		boolean nines = false;
@@ -94,7 +112,7 @@ public class SudokuProcessor {
 			possibleValues.add((short) 9);
 		}
 
-		return possibleValues;
+		return possibleValues.toArray(new Short[0]);
 	}
 
 	public Set<Short> fillSet(int first, int last) {

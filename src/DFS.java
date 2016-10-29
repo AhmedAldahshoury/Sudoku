@@ -1,4 +1,3 @@
-
 public class DFS {
 
 	SudokuProcessor processor;
@@ -13,17 +12,21 @@ public class DFS {
 		if (!this.processor.hasEmptySquares(currentSquare)) {
 			return processor.isValid(this.sudoku);
 		}
+		
+		boolean forwardChecking = false;
 
-		GridSquare square = this.processor.nextEmptySquare(currentSquare);
-		for (int i = 1; i <= 9; i++) {
-			this.processor.nextState(this.sudoku, square.getRow(), square.getColumn(), i);
+		GridSquare square = this.processor.nextEmptySquare(currentSquare, forwardChecking);
+		Short[] possibleValues = this.processor.getPossibleValues(this.sudoku, square, forwardChecking);
+		
+		for (int i = 0; i < possibleValues.length; i++) {
+			this.processor.nextState(this.sudoku, square.getRow(), square.getColumn(), possibleValues[i]);
 
 			if (search(square)) {
 				return true;
 			}
 		}
 
-		return false;
+		return search(square);
 	}
 
 }
