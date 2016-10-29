@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SudokuReader {
-	
+
 	ArrayList<GridSquare> emptySquares = new ArrayList<>();
-	
+
 	public short[][] read(String sudoku) throws IOException {
 		List<String> lines = Files.readAllLines(Paths.get(this.sudokuPath() + sudoku));
 		short[][] numbers = new short[9][9];
@@ -26,14 +26,15 @@ public class SudokuReader {
 		}
 		return numbers;
 	}
-	
+
 	/**
 	 * 
 	 * @return The system's absolute path on disk.
 	 */
 	public String sudokuPath() {
 		try {
-			return URLDecoder.decode(ClassLoader.getSystemClassLoader().getResource(".").getPath(), "UTF-8") + "sudokus/";
+			return URLDecoder.decode(ClassLoader.getSystemClassLoader().getResource(".").getPath(), "UTF-8")
+					+ "sudokus/";
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
