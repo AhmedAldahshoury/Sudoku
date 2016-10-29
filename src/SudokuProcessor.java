@@ -1,8 +1,13 @@
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Set;
 
 public class SudokuProcessor {
+	
+	static Queue<short[][]> unVisited = new LinkedList<short[][]>();
+	
 	public static Set<Short> getPossibleMoves(short[][] grid, int x, int y) {
 
 		Set<Short> possibleValues = new HashSet<Short>();
@@ -62,6 +67,27 @@ public class SudokuProcessor {
 
 		return possibleValues;
 	}
+	
+	public static void BFS(){
+		//if(badie array is empty)
+		//Finished,else
+		//find the Zeros
+		//short[badie][badie] state = unVisited.add(state);
+		//
+		
+	}
+	
+	
+	public static void BFSConstruction(short[][] state ){
+		
+		state = unVisited.poll();
+		for(short i=1; i<10; i++){
+			state[badie][badie]=i;
+			unVisited.add(state);
+		}
+		
+	}
+	
     
 	public static void main(String[] args) {
 		
