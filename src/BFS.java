@@ -5,39 +5,38 @@ public class BFS {
 
 	SudokuProcessor processor;
 	short[][] sudoku;
-	Queue<short[][]> unVisited = new LinkedList<short[][]>();
+	Queue<SudokuState> unVisited = new LinkedList<SudokuState>();
 
 	public BFS(SudokuProcessor processor, short[][] sudoku) {
 		this.processor = processor;
 		this.sudoku = sudoku;
-		this.unVisited.add(this.sudoku);
+		this.unVisited.add(new SudokuState(sudoku, null));
 	}
 
-	public boolean search(GridSquare currentSquare) {
-		short[][] state = unVisited.poll();
-		if (state == null) {
-			return false;
-		}
+	@SuppressWarnings("unused")
+	public SearchResult search() {
+		SudokuState state = unVisited.poll();
 
-		if (!this.processor.hasEmptySquares(currentSquare)) {
-			if (this.processor.isValid(this.sudoku)) {
-				return true;
+//		if (state == null) {
+//			return false;
+//		}
+
+		GridSquare square = state.getCurrentSquare();
+
+		if (!this.processor.hasEmptySquares(square)) {
+			if (this.processor.isValid(state.getSudoku())) {
+				this.sudoku = state.getSudoku();
+				return new SearchResult(state.getSudoku(), true);
 			}
 		} else {
-			GridSquare square = this.processor.nextEmptySquare(currentSquare);
+			square = this.processor.nextEmptySquare(state.getCurrentSquare());
 			for (short i = 1; i <= 9; i++) {
-				short[][] nextSudoku = this.processor.clone(state);
+				short[][] nextSudoku = this.processor.clone(state.getSudoku());
 				nextSudoku[square.getRow()][square.getColumn()] = i;
-				unVisited.add(nextSudoku);
+				unVisited.add(new SudokuState(nextSudoku, square));
 			}
 		}
 
-		return search(currentSquare);
-
+		return search();
 	}
-
-	public void BFSConstruction(short[][] state) {
-
-	}
-
 }

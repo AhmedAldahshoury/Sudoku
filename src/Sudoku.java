@@ -14,10 +14,15 @@ public class Sudoku {
 
 //		if (dfs.search(null)) {
 //			processor.print(sudoku);
+//		} else {
+//			System.out.println("No solution found.");
 //		}
 		
-		if (bfs.search(null)) {
-			processor.print(sudoku);
+		SearchResult search = bfs.search();
+		if (search.getResult()) {
+			processor.print(search.getSudoku());
+		} else {
+			System.out.println("No solution found.");
 		}
 	}
 
