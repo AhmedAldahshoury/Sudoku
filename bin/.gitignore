@@ -1,3 +1,9 @@
+/.project
+/BFS.class
+/DFS.class
+/EmptySquareIterator.class
+/GridSquare.class
+/Sudoku.class
 /SudokuProcessor.class
 /SudokuReader.class
-/SudokuBFS.class
+/MRV.class
