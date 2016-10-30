@@ -181,6 +181,13 @@ public class SudokuProcessor {
 		System.out.println();
 	}
 
+	public void changes(short[][] fin, ArrayList<GridSquare> squares) {
+		for (GridSquare square : squares) {
+			System.out.println(
+					square.getRow() + " " + square.getColumn() + " " + fin[square.getRow()][square.getColumn()]);
+		}
+	}
+
 	public short[][] clone(short[][] sudoku) {
 		short[][] result = new short[sudoku.length][];
 		for (int i = 0; i < sudoku.length; i++)

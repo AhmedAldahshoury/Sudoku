@@ -9,8 +9,9 @@ public class BFS {
 
 	public BFS(SudokuProcessor processor, short[][] sudoku) {
 		this.processor = processor;
-		this.sudoku = sudoku;
-		this.unVisited.add(new SudokuState(sudoku, null));
+		this.sudoku = processor.clone(sudoku);
+		
+		this.unVisited.add(new SudokuState(this.sudoku, null));
 	}
 
 	public SearchResult search() {
@@ -20,7 +21,6 @@ public class BFS {
 
 		if (!this.processor.hasEmptySquares(square)) {
 			if (this.processor.isValid(state.getSudoku())) {
-				this.sudoku = state.getSudoku();
 				return new SearchResult(state.getSudoku(), true);
 			}
 		} else {

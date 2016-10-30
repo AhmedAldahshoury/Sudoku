@@ -6,26 +6,30 @@ public class DFS {
 
 	public DFS(SudokuProcessor processor, short[][] sudoku) {
 		this.processor = processor;
-		this.sudoku = sudoku;
+		this.sudoku = this.processor.clone(sudoku);
 	}
 
-	public boolean search(GridSquare currentSquare) {
-		if (!this.processor.hasEmptySquares(currentSquare)) {
-			return processor.isValid(this.sudoku);
-		}
+	public SearchResult search(SudokuState state) {
 		
-		processor.print(sudoku);
+		if (!this.processor.hasEmptySquares(state.getCurrentSquare())) {
+			return new SearchResult(state.getSudoku(), processor.isValid(state.getSudoku()));
+		}
 
-		GridSquare square = this.processor.nextEmptySquare(currentSquare);
-		for (int i = 1; i <= 9; i++) {
-			this.processor.nextState(this.sudoku, square.getRow(), square.getColumn(), i);
+		GridSquare square = this.processor.nextEmptySquare(state.getCurrentSquare());
+		for (short i = 1; i <= 9; i++) {
+			
+			short[][] nextSudoku = this.processor.clone(state.getSudoku());
+			SudokuState nextState = new SudokuState(nextSudoku, square);
+			
+			nextSudoku[square.getRow()][square.getColumn()] = i;
 
-			if (search(square)) {
-				return true;
+			SearchResult search = search(nextState);
+			if (search.getResult()) {
+				return new SearchResult(search.getSudoku(), true);
 			}
 		}
 
-		return false;
+		return new SearchResult(state.getSudoku(), false);
 	}
 
 }
