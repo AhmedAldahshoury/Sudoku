@@ -152,7 +152,7 @@ public class SudokuProcessor {
 
 		return values.isEmpty();
 	}
-	
+
 	public boolean isValidGrid(short[][] grid, int row, int column) {
 		Set<Short> values = fillSet(1, 7);
 
@@ -199,5 +199,12 @@ public class SudokuProcessor {
 			System.out.println();
 		}
 		System.out.println();
+	}
+
+	public short[][] clone(short[][] sudoku) {
+		short[][] result = new short[sudoku.length][];
+		for (int i = 0; i < sudoku.length; i++)
+			result[i] = sudoku[i].clone();
+		return result;
 	}
 }
