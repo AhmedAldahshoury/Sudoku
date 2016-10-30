@@ -13,6 +13,8 @@ public class DFS {
 		if (!this.processor.hasEmptySquares(currentSquare)) {
 			return processor.isValid(this.sudoku);
 		}
+		
+		processor.print(sudoku);
 
 		GridSquare square = this.processor.nextEmptySquare(currentSquare);
 		for (int i = 1; i <= 9; i++) {

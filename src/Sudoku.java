@@ -12,18 +12,18 @@ public class Sudoku {
 		DFS dfs = new DFS(processor, sudoku);
 		BFS bfs = new BFS(processor, sudoku);
 
-//		if (dfs.search(null)) {
-//			processor.print(sudoku);
-//		} else {
-//			System.out.println("No solution found.");
-//		}
-		
-		SearchResult search = bfs.search();
-		if (search.getResult()) {
-			processor.print(search.getSudoku());
+		if (dfs.search(null)) {
+			processor.print(sudoku);
 		} else {
 			System.out.println("No solution found.");
 		}
+		
+//		SearchResult search = bfs.search();
+//		if (search.getResult()) {
+//			processor.print(search.getSudoku());
+//		} else {
+//			System.out.println("No solution found.");
+//		}
 	}
 
 }
