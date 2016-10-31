@@ -1,32 +1,51 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class DFS {
 
 	SudokuProcessor processor;
 	short[][] sudoku;
-
-	public DFS(SudokuProcessor processor, short[][] sudoku) {
+	boolean forwardChecking;
+	
+	public DFS(SudokuProcessor processor, short[][] sudoku, boolean forwardChecking) {
 		this.processor = processor;
-		this.sudoku = sudoku;
+		this.sudoku = this.processor.clone(sudoku);
+		this.forwardChecking = forwardChecking;
 	}
 
-	public boolean search(GridSquare currentSquare) {
-		if (!this.processor.hasEmptySquares(currentSquare)) {
-			return processor.isValid(this.sudoku);
+	public SearchResult search(SudokuState state) {
+		
+//		processor.print(state.getSudoku());
+		
+		if (!this.processor.hasEmptySquares(state)) {
+			return new SearchResult(state.getSudoku(), processor.isValid(state.getSudoku()));
 		}
 		
-		boolean forwardChecking = false;
-
-		GridSquare square = this.processor.nextEmptySquare(currentSquare, forwardChecking);
-		Short[] possibleValues = this.processor.getPossibleValues(this.sudoku, square, forwardChecking);
+		GridSquare square = this.processor.nextEmptySquare(state, this.forwardChecking);
+		Short[] possibleValues = processor.getPossibleValues(state.getSudoku(), square, this.forwardChecking);
 		
-		for (int i = 0; i < possibleValues.length; i++) {
-			this.processor.nextState(this.sudoku, square.getRow(), square.getColumn(), possibleValues[i]);
+//		square.print();
+//		System.out.println(Arrays.toString(possibleValues));
+		
+		for (short i = 0; i < possibleValues.length; i++) {
+			
+			short[][] nextSudoku = this.processor.clone(state.getSudoku());
+			ArrayList<GridSquare> nextEmptySquares = this.processor.nextEmptySquares(state, this.forwardChecking);
+//			System.out.println("------");
+//			System.out.println(state.getEmptySquares().size());
+//			System.out.println(nextEmptySquares.size());
+//			System.out.println("------");
+			SudokuState nextState = new SudokuState(nextSudoku, square, nextEmptySquares);
+			
+			nextSudoku[square.getRow()][square.getColumn()] = possibleValues[i];
 
-			if (search(square)) {
-				return true;
+			SearchResult search = search(nextState);
+			if (search.getResult()) {
+				return new SearchResult(search.getSudoku(), true);
 			}
 		}
 
-		return search(square);
+		return new SearchResult(state.getSudoku(), false);
 	}
 
 }
