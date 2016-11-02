@@ -4,53 +4,49 @@ import java.util.Set;
 
 public class SudokuProcessor {
 
-	private ArrayList<GridSquare> emptySquares;
-
-	public SudokuProcessor(ArrayList<GridSquare> emptySquares) {
-		this.emptySquares = emptySquares;
+	public SudokuProcessor() {
 	}
 
 	public boolean hasEmptySquares(SudokuState state) {
-		// System.out.println(state.getEmptySquares().size());
-		// GridSquare square = state.getCurrentSquare();
-		// if (square == null) {
-		// return this.emptySquares.size() > 0;
-		// }
-		// GridSquare lastEmptySquare =
-		// this.emptySquares.get(this.emptySquares.size() - 1);
-		// return !(square.getRow() == lastEmptySquare.getRow() &&
-		// square.getColumn() == lastEmptySquare.getColumn());
 		return state.getEmptySquares() != null && state.getEmptySquares().size() > 0;
 	}
 
 	private GridSquare nextEmptySquare(SudokuState state) {
-//		 GridSquare currentSquare = state.getCurrentSquare();
-
-//		 if (currentSquare == null && this.emptySquares.size() > 0) {
 		return state.getEmptySquares().get(0);
-//		 }
-//
-//		 int i = 0;
-//		 System.out.println("5ara: " + state.getEmptySquares().size());
-//		 for (GridSquare square : state.getEmptySquares()) {
-//		 if (i == state.getEmptySquares().size() - 1) {
-//		 return null;
-//		 }
-//		 if (square.getRow() == currentSquare.getRow() && square.getColumn()
-//		 == currentSquare.getColumn()) {
-//		 return state.getEmptySquares().get(i + 1);
-//		 }
-//		 ++i;
-//		 }
-//		
-//		 return null;
+	}
+	
+	private int getPositiveLength(Short[] array) {
+		int length = 0;
+		for(int i = 0; i < array.length; i++) {
+			if (array[i] > 0) {
+				++length;
+			}
+		}
+		
+		return length;
 	}
 
-	private GridSquare nextMostConstrainedSquare(SudokuState state) {
+	private GridSquare nextMostConstrainedSquare(SudokuState state, boolean arcConsistent) {
+		
 		GridSquare mostConstrainedSquare = state.getEmptySquares().get(0);
 		short[][] sudoku = state.getSudoku();
+		int minimumDomainLength = 0;
+		
+		if (arcConsistent) {
+			minimumDomainLength = getPositiveLength(mostConstrainedSquare.getDomain(null, null, false, true));
+			
+			for (GridSquare square : state.getEmptySquares()) {
+				int domainLength = getPositiveLength(square.getDomain(null, null, false, true));
+				if (domainLength < minimumDomainLength) {
+					minimumDomainLength = domainLength;
+					mostConstrainedSquare = square;
+				}
+			}
+			
+			return mostConstrainedSquare;
+		}
 
-		int minimumDomainLength = getPossibleValues(sudoku, mostConstrainedSquare, true).length;
+		minimumDomainLength = getPossibleValues(sudoku, mostConstrainedSquare, true).length;
 
 		for (GridSquare square : state.getEmptySquares()) {
 			int domainLength = getPossibleValues(sudoku, square, true).length;
@@ -63,42 +59,29 @@ public class SudokuProcessor {
 		return mostConstrainedSquare;
 	}
 
-	public GridSquare nextEmptySquare(SudokuState state, boolean forwardChecking) {
+	public GridSquare nextEmptySquare(SudokuState state, boolean forwardChecking, boolean arcConsistency) {
+		if (arcConsistency) {
+			return nextMostConstrainedSquare(state, true);
+		}
 		if (forwardChecking) {
-			return nextMostConstrainedSquare(state);
+			return nextMostConstrainedSquare(state, false);
 		}
 
 		return nextEmptySquare(state);
 	}
 
-	public ArrayList<GridSquare> nextEmptySquares(SudokuState state, boolean forwardChecking) {
+	public ArrayList<GridSquare> nextEmptySquares(SudokuState state, boolean forwardChecking, boolean arcConsistency) {
 		ArrayList<GridSquare> clone = clone(state.getEmptySquares());
-
-		if (forwardChecking) {
-			clone.remove(nextMostConstrainedSquare(state));
+		if (arcConsistency) {
+			clone.remove(nextMostConstrainedSquare(state, true));
 			return clone;
 		}
-
-//		if (state.getCurrentSquare() == null && state.getEmptySquares().size() > 0) {
-			clone.remove(0);
+		if (forwardChecking) {
+			clone.remove(nextMostConstrainedSquare(state, false));
 			return clone;
-//		}
-
-//		int i = 0;
-//		boolean found = false;
-//		for (GridSquare square : state.getEmptySquares()) {
-//			if (square.compareTo(state.getCurrentSquare()) == 0) {
-//				found = true;
-//				break;
-//			}
-//			++i;
-//		}
-//
-//		if (found == true) {
-//			clone.remove(i);
-//		}
-//
-//		return clone;
+		}
+		clone.remove(0);
+		return clone;
 	}
 
 	// ---------------------------------------------------------------------------------------------------------------------------------------------------

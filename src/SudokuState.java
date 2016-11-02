@@ -19,6 +19,10 @@ public class SudokuState {
 		return currentSquare;
 	}
 	
+	public void setEmptySquares(ArrayList<GridSquare> emptySquares) {
+		this.emptySquares = emptySquares;
+	}
+	
 	public ArrayList<GridSquare> getEmptySquares() {
 		return this.emptySquares;
 	}
