@@ -11,16 +11,13 @@ public class BFS {
 	public BFS(SudokuProcessor processor, short[][] sudoku, ArrayList<GridSquare> emptySquares) {
 		this.processor = processor;
 		this.sudoku = processor.clone(sudoku);
-		
+
 		this.unVisited.add(new SudokuState(this.sudoku, null, emptySquares));
 	}
 
 	public SearchResult search() {
-		
-		System.out.println(unVisited.size());
-		
 		SudokuState state = unVisited.poll();
-		
+
 		if (state == null) {
 			return new SearchResult(null, false);
 		}
@@ -31,8 +28,7 @@ public class BFS {
 			if (this.processor.isValid(state.getSudoku())) {
 				return new SearchResult(state.getSudoku(), true);
 			}
-		} 
-		else {
+		} else {
 			square = this.processor.nextEmptySquare(state, false);
 			for (short i = 1; i <= 9; i++) {
 				short[][] nextSudoku = this.processor.clone(state.getSudoku());
