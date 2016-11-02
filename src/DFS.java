@@ -24,17 +24,10 @@ public class DFS {
 		GridSquare square = this.processor.nextEmptySquare(state, this.forwardChecking);
 		Short[] possibleValues = processor.getPossibleValues(state.getSudoku(), square, this.forwardChecking);
 		
-//		square.print();
-//		System.out.println(Arrays.toString(possibleValues));
-		
 		for (short i = 0; i < possibleValues.length; i++) {
 			
 			short[][] nextSudoku = this.processor.clone(state.getSudoku());
 			ArrayList<GridSquare> nextEmptySquares = this.processor.nextEmptySquares(state, this.forwardChecking);
-//			System.out.println("------");
-//			System.out.println(state.getEmptySquares().size());
-//			System.out.println(nextEmptySquares.size());
-//			System.out.println("------");
 			SudokuState nextState = new SudokuState(nextSudoku, square, nextEmptySquares);
 			
 			nextSudoku[square.getRow()][square.getColumn()] = possibleValues[i];

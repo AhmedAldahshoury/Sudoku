@@ -7,14 +7,14 @@ public class ArcConsistency {
 	
 	SudokuProcessor processor;
 	short[][] sudoku;
-	public static ArrayList<GridElement> emptyElements = new ArrayList<GridElement>();
+	public static ArrayList<GridSquare> emptyElements = new ArrayList<>();
 	
 	public ArcConsistency(SudokuProcessor processor, short[][] sudoku) {
 		this.processor = processor;
 		this.sudoku = processor.clone(sudoku);
 		getEmptyElements(sudoku);
 		for(int i = 0; i<emptyElements.size(); i++){
-			GridElement e = emptyElements.get(i);
+			GridSquare e = emptyElements.get(i);
 			GridSquare s = new GridSquare(e.getRow(), e.getColumn());
 			e.setDomain(getPossibleValues(sudoku, s, true));
 			System.out.println(Arrays.toString(e.getDomain()));
@@ -22,7 +22,7 @@ public class ArcConsistency {
 			int rowE = e.getRow();
 			int columnE = e.getColumn();			
 			for(int j = 0; j <emptyElements.size(); j++){
-				GridElement g = emptyElements.get(j);
+				GridSquare g = emptyElements.get(j);
 				int rowG = g.getRow();
 				int columnG = g.getColumn();
 				if(rowE == rowG && columnE == columnG)
@@ -44,21 +44,21 @@ public class ArcConsistency {
 		}
 	}
 	
-	public static void arcCons(GridElement e){
+	public static void arcCons(GridSquare e){
 		Short[] domainBefore = e.getDomain().clone();
 		pruneDomain(e);
 		Short[] domainAfter = e.getDomain();
 		if(Arrays.equals(domainBefore, domainAfter))
 			return;
 		else{
-			ArrayList<GridElement> constraints = e.getConstraints();
+			ArrayList<GridSquare> constraints = e.getConstraints();
 			for(int i =0; i < constraints.size(); i++){
 				arcCons(constraints.get(i));
 			}
 		}
 	}
 	
-	public static void pruneDomain(GridElement e){
+	public static void pruneDomain(GridSquare e){
 		Short[] domainE = e.getDomain();
 		//System.out.println(domainE);
 		int rowE = e.getRow();
@@ -86,7 +86,7 @@ public class ArcConsistency {
 		
 		
 		for(int i = 0; i < e.getConstraints().size();i++){
-			GridElement g = e.getConstraints().get(i);
+			GridSquare g = e.getConstraints().get(i);
 			Short[] domainG = g.getDomain();
 			if(domainG.length == 1){
 				for(int j = 0; j < domainE.length; j++){
@@ -100,12 +100,12 @@ public class ArcConsistency {
 //		System.out.println(Arrays.toString(domainE));
 	}
 	
-	public static ArrayList<GridElement> getEmptyElements(short[][] sudoku){
-		emptyElements = new ArrayList<GridElement>();
+	public static ArrayList<GridSquare> getEmptyElements(short[][] sudoku){
+		emptyElements = new ArrayList<>();
 		for(int i = 0; i<sudoku.length; i++){
 			for(int j = 0; j<sudoku[i].length; j++){
 				if(sudoku[i][j] == 0)
-					emptyElements.add(new GridElement(i,j));
+					emptyElements.add(new GridSquare(i,j));
 			}
 		}
 		return emptyElements;

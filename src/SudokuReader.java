@@ -11,9 +11,7 @@ public class SudokuReader {
 	ArrayList<GridSquare> emptySquares = new ArrayList<>();
 
 	public short[][] read(String sudoku) throws IOException {
-		System.out.println(this.sudokuPath());
-		List<String> lines = Files.readAllLines(Paths.get("C:/Users/Hp 01/workspace2/GUC-Sudoku/Sudoku/bin/sudokus/" + sudoku));
-		//List<String> lines = Files.readAllLines(Paths.get(this.sudokuPath() + sudoku));
+		List<String> lines = Files.readAllLines(Paths.get(this.sudokuPath() + sudoku + ".sud"));
 		short[][] numbers = new short[9][9];
 		int i = 0;
 		for (String line : lines) {
@@ -35,8 +33,13 @@ public class SudokuReader {
 	 */
 	public String sudokuPath() {
 		try {
-			return URLDecoder.decode(ClassLoader.getSystemClassLoader().getResource(".").getPath(), "UTF-8")
+			String path = URLDecoder.decode(ClassLoader.getSystemClassLoader().getResource(".").getPath(), "UTF-8")
 					+ "sudokus/";
+			if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
+				return path.substring(1);
+			}
+			
+			return path;
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}

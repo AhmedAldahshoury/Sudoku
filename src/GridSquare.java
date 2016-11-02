@@ -1,6 +1,9 @@
+import java.util.ArrayList;
 
 public class GridSquare implements Cloneable, Comparable<GridSquare> {
 	private int row, column;
+	private Short[] domain ;
+	private ArrayList<GridSquare> constraints = new ArrayList<>();
 	
 	public int getColumn() {
 		return column;
@@ -21,6 +24,26 @@ public class GridSquare implements Cloneable, Comparable<GridSquare> {
 	public GridSquare(int row, int column) {
 		this.row = row;
 		this.column = column;
+	}
+	
+	public void setDomain(Short[] domain){
+		this.domain = domain.clone();
+	}
+	
+	public Short[] getDomain(){
+		return domain;
+	}
+	
+	public ArrayList<GridSquare> getConstraints(){
+		return constraints;
+	}
+	
+	public void setConstraints(ArrayList<GridSquare> constraints){
+		this.constraints = constraints;
+	}
+	
+	public void addConstraint(GridSquare e){
+		this.constraints.add(e);
 	}
 	
 	public void print() {

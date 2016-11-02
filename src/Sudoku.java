@@ -6,7 +6,7 @@ public class Sudoku {
 		SudokuReader sr = new SudokuReader();
 		SudokuProcessor processor = new SudokuProcessor(sr.emptySquares);
 
-		short[][] sudoku = sr.read("7.sud");
+		short[][] sudoku = sr.read("7");
 
 		System.out.println("Original state");
 		processor.print(sudoku);
