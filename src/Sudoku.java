@@ -6,20 +6,23 @@ public class Sudoku {
 		SudokuReader sr = new SudokuReader();
 		SudokuProcessor processor = new SudokuProcessor(sr.emptySquares);
 
-		short[][] sudoku = sr.read("5.sud");
+		short[][] sudoku = sr.read("7.sud");
 
 		System.out.println("Original state");
 		processor.print(sudoku);
-
-		DFS dfs = new DFS(processor, sudoku, true);
-		SearchResult dfSearch = dfs.search(new SudokuState(sudoku, null, processor.clone(sr.emptySquares)));
-		if (dfSearch.getResult()) {
-			System.out.println("Solution found.");
-			processor.print(dfSearch.getSudoku());
-			processor.changes(dfSearch.getSudoku(), sr.emptySquares);
-		} else {
-			System.out.println("No solution found.");
-		}
+		ArcConsistency a = new ArcConsistency(processor, sudoku);
+//		a.pruneDomain(a.emptyElements.get(3));
+		a.search();
+		
+//		DFS dfs = new DFS(processor, sudoku, true);
+//		SearchResult dfSearch = dfs.search(new SudokuState(sudoku, null, processor.clone(sr.emptySquares)));
+//		if (dfSearch.getResult()) {
+//			System.out.println("Solution found.");
+//			processor.print(dfSearch.getSudoku());
+//			processor.changes(dfSearch.getSudoku(), sr.emptySquares);
+//		} else {
+//			System.out.println("No solution found.");
+//		}
 
 //		 BFS bfs = new BFS(processor, sudoku,
 //		 processor.clone(sr.emptySquares));

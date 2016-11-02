@@ -3,7 +3,12 @@
 /DFS.class
 /EmptySquareIterator.class
 /GridSquare.class
+/MRV.class
+/SearchResult.class
 /Sudoku.class
 /SudokuProcessor.class
 /SudokuReader.class
-/MRV.class
+/SudokuState.class
+/ArcConsistency.class
+/GridElement.class
+/Bla.class

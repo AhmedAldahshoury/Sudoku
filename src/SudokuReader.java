@@ -11,7 +11,9 @@ public class SudokuReader {
 	ArrayList<GridSquare> emptySquares = new ArrayList<>();
 
 	public short[][] read(String sudoku) throws IOException {
-		List<String> lines = Files.readAllLines(Paths.get(this.sudokuPath() + sudoku));
+		System.out.println(this.sudokuPath());
+		List<String> lines = Files.readAllLines(Paths.get("C:/Users/Hp 01/workspace2/GUC-Sudoku/Sudoku/bin/sudokus/" + sudoku));
+		//List<String> lines = Files.readAllLines(Paths.get(this.sudokuPath() + sudoku));
 		short[][] numbers = new short[9][9];
 		int i = 0;
 		for (String line : lines) {
