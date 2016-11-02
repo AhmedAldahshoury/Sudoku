@@ -3,119 +3,85 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
-
 public class ArcConsistency {
-	
+
 	SudokuProcessor processor;
 	short[][] sudoku;
-	public static ArrayList<GridSquare> emptySquares = new ArrayList<>();
-	
+	public ArrayList<GridSquare> emptySquares = new ArrayList<>();
+
 	public ArcConsistency(SudokuProcessor processor, short[][] sudoku, ArrayList<GridSquare> emptySquares) {
 		this.processor = processor;
 		this.sudoku = processor.clone(sudoku);
-//		getEmptyElements(sudoku);
 		this.emptySquares = emptySquares;
-		for(int i = 0; i<emptySquares.size(); i++){
+		for (int i = 0; i < emptySquares.size(); i++) {
 			GridSquare e = emptySquares.get(i);
 			GridSquare s = new GridSquare(e.getRow(), e.getColumn());
 			e.setDomain(getPossibleValues(sudoku, s, true));
-//			System.out.println(Arrays.toString(e.getDomain(null, null, false, true)));
-			
+
 			int rowE = e.getRow();
-			int columnE = e.getColumn();			
-			for(int j = 0; j <emptySquares.size(); j++){
+			int columnE = e.getColumn();
+			for (int j = 0; j < emptySquares.size(); j++) {
 				GridSquare g = emptySquares.get(j);
 				int rowG = g.getRow();
 				int columnG = g.getColumn();
-				if(rowE == rowG && columnE == columnG)
+				if (rowE == rowG && columnE == columnG)
 					continue;
-				else if((rowG == rowE && columnG != columnE) || (rowG != rowE && columnG == columnE) || (((rowG / 3) * 3) == ((rowE / 3) * 3) && ((columnG / 3) * 3) == ((columnE / 3) * 3) )){
-//					System.out.println(rowE +"  " + columnE);
+				else if ((rowG == rowE && columnG != columnE) || (rowG != rowE && columnG == columnE)
+						|| (((rowG / 3) * 3) == ((rowE / 3) * 3) && ((columnG / 3) * 3) == ((columnE / 3) * 3))) {
 					e.addConstraint(g);
-				}
 				}
 			}
 		}
-	
-	public /*SearchResult*/ArrayList<GridSquare> search(){
-		for(int i = 0; i < emptySquares.size(); i++){
+	}
+
+	public ArrayList<GridSquare> search() {
+		for (int i = 0; i < emptySquares.size(); i++) {
 			arcCons(emptySquares.get(i));
 		}
-//		for(int i = 0; i < emptySquares.size(); i++){
-//			System.out.println(Arrays.toString(emptySquares.get(i).getDomain(null, null, false, true)));
-//		}
-		
+
 		return emptySquares;
 	}
-	
-	public static void arcCons(GridSquare e){
+
+	public static void arcCons(GridSquare e) {
 		Short[] domainBefore = e.getDomain(null, null, false, true).clone();
 		pruneDomain(e);
 		Short[] domainAfter = e.getDomain(null, null, false, true);
-		if(Arrays.equals(domainBefore, domainAfter))
+		if (Arrays.equals(domainBefore, domainAfter))
 			return;
-		else{
+		else {
 			ArrayList<GridSquare> constraints = e.getConstraints();
-			for(int i =0; i < constraints.size(); i++){
+			for (int i = 0; i < constraints.size(); i++) {
 				arcCons(constraints.get(i));
 			}
 		}
 	}
-	
-	public static void pruneDomain(GridSquare e){
+
+	public static void pruneDomain(GridSquare e) {
 		Short[] domainE = e.getDomain(null, null, false, true);
-		//System.out.println(domainE);
-		int rowE = e.getRow();
-		int columnE = e.getColumn();
-//		for(int i =0; i<emptyElements.size(); i++){
-//			GridElement g = emptyElements.get(i);
-//			Short[] domainG = g.getDomain(null, null, false, true);
-//			int rowG = g.getRow();
-//			int columnG = g.getColumn();
-//			if(rowE == rowG && columnE == columnG)
-//				continue;
-//			else if((rowG == rowE && columnG != columnE) || (rowG != rowE && columnG == columnE) || (((rowG / 3) * 3) == ((rowE / 3) * 3) && ((columnG / 3) * 3) == ((columnE / 3) * 3) )){
-////				System.out.println(rowG +" "+ columnG + "   " + rowE +" "+ columnE);
-//				if(domainG.length == 1){
-////					System.out.println(rowG +" "+ columnG + "   " + rowE +" "+ columnE);
-//					for(int j = 0; j < domainE.length; j++){
-////						System.out.println(domainE[i] +" "+ domainG[0] );
-//						if(domainE[j] == domainG[0] && domainE[j] != 8 && domainE[j] != 9)
-//							domainE[j] = -1;
-//					}
-//				}
-//			}
-//		}
-		
-		
-		
-		for(int i = 0; i < e.getConstraints().size();i++){
+
+		for (int i = 0; i < e.getConstraints().size(); i++) {
 			GridSquare g = e.getConstraints().get(i);
 			Short[] domainG = g.getDomain(null, null, false, true);
-			if(domainG.length == 1){
-				for(int j = 0; j < domainE.length; j++){
-//				System.out.println(domainE[i] +" "+ domainG[0] );
-				if(domainE[j] == domainG[0] && domainE[j] != 8 && domainE[j] != 9)
-					domainE[j] = -1;
-			}
+			if (domainG.length == 1) {
+				for (int j = 0; j < domainE.length; j++) {
+					if (domainE[j] == domainG[0] && domainE[j] != 8 && domainE[j] != 9)
+						domainE[j] = -1;
+				}
 			}
 		}
-		
-//		System.out.println(Arrays.toString(domainE));
 	}
-	
-	public static ArrayList<GridSquare> getEmptyElements(short[][] sudoku){
+
+	public ArrayList<GridSquare> getEmptyElements(short[][] sudoku) {
 		emptySquares = new ArrayList<>();
-		for(int i = 0; i<sudoku.length; i++){
-			for(int j = 0; j<sudoku[i].length; j++){
-				if(sudoku[i][j] == 0)
-					emptySquares.add(new GridSquare(i,j));
+		for (int i = 0; i < sudoku.length; i++) {
+			for (int j = 0; j < sudoku[i].length; j++) {
+				if (sudoku[i][j] == 0)
+					emptySquares.add(new GridSquare(i, j));
 			}
 		}
 		return emptySquares;
 	}
-	
+
 	public Short[] getPossibleValues(short[][] sudoku, GridSquare square, boolean forwardChecking) {
 
 		Set<Short> possibleValues = new HashSet<Short>();

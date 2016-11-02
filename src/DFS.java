@@ -38,7 +38,6 @@ public class DFS {
 
 			SearchResult search = search(nextState);
 			if (search.getResult()) {
-//				System.out.println(square.getRow() + " " + square.getColumn() + " " + possibleValues[i]);
 				this.placements.add(square.getRow() + " " + square.getColumn() + " " + possibleValues[i]);
 				return new SearchResult(search.getSudoku(), true, this.placements);
 			}

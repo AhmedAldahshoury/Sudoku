@@ -4,9 +4,6 @@ import java.util.Set;
 
 public class SudokuProcessor {
 
-	public SudokuProcessor() {
-	}
-
 	public boolean hasEmptySquares(SudokuState state) {
 		return state.getEmptySquares() != null && state.getEmptySquares().size() > 0;
 	}
